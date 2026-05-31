@@ -1,401 +1,271 @@
+# 🚀 MicroboltOTA
 
+**Simple OTA Updates & Wireless Debugging for ESP32**
 
-\# MicroboltOTA
+MicroboltOTA makes it easy to upload firmware and monitor logs over Wi-Fi without constantly plugging in a USB cable.
 
+Perfect for:
 
+🤖 Robotics Projects
+🏠 IoT Devices
+🚗 RC Vehicles
+🔬 Embedded Development
+⚡ Rapid Prototyping
 
-🚀 ESP32 OTA Firmware Updates + Wireless Serial Debugging (Telnet)
+---
 
+## ✨ Features
 
+✅ OTA Firmware Uploads over Wi-Fi
 
-MicroboltOTA is a lightweight, header-only ESP32 library that provides over-the-air (OTA) firmware updates and wireless serial monitoring via Telnet with a simple API.
+✅ Wireless Serial Monitoring
 
+✅ mDNS Hostname Support (`MyRobot.local`)
 
+✅ Automatic Wi-Fi Reconnection
 
-Designed for robotics, IoT, and embedded systems projects.
+✅ Telnet Debug Console
 
+✅ PlatformIO Friendly
 
+✅ Lightweight & Easy to Use
 
-\---
+---
 
+## 📦 Installation
 
-
-\## ✨ Features
-
-
-
-\- 📡 OTA firmware updates using ArduinoOTA
-
-\- 🌐 Wireless Serial Monitor via Telnet (port 23)
-
-\- 🔁 Automatic WiFi reconnect handling
-
-\- ⚡ Non-blocking background execution
-
-\- 🧠 Simple API (begin + run)
-
-\- 🪶 Header-only (no installation complexity)
-
-\- 🤖 Built for ESP32 robotics \& embedded systems
-
-
-
-\---
-
-
-
-\## 📦 Installation
-
-
-
-\### PlatformIO
-
-
-
-Add to `lib\_deps`
-
-
+Add the library to your PlatformIO project:
 
 ```ini
+lib_deps =
+    https://github.com/MicroboltRobotics/MicroboltOTA.git
+```
 
-lib\_deps =
+---
 
-&#x20;   httpsgithub.comMicroboltRoboticsMicroboltOTA
+## 🌐 Hostnames (No More IP Addresses!)
 
-````
+MicroboltOTA uses mDNS hostnames to identify devices on your network.
 
-
-
-\---
-
-
-
-\### Manual Installation
-
-
-
-1\. Download this repository
-
-2\. Copy `MicroboltOTA.h` into your `lib` folder
-
-3\. Include it in your project
-
-
-
-\---
-
-
-
-\## 🚀 Quick Start
-
-
+Example:
 
 ```cpp
+MicroboltOTA::begin(
+    "YOUR_WIFI_NAME",
+    "YOUR_WIFI_PASSWORD",
+    "MyRobot"
+);
+```
 
-\#include MicroboltOTA.h
+The third parameter becomes your device hostname.
 
+```text
+MyRobot.local
+```
 
+Instead of remembering:
+
+```text
+192.168.1.123
+```
+
+you can simply use:
+
+```text
+MyRobot.local
+```
+
+for OTA uploads and wireless monitoring.
+
+### 🚀 OTA Upload
+
+```ini
+upload_protocol = espota
+upload_port = MyRobot.local
+```
+
+### 🖥️ Wireless Monitor
+
+```ini
+monitor_port = socket://MyRobot.local:23
+monitor_speed = 115200
+```
+
+### 💡 Default Hostname
+
+If no hostname is provided:
+
+```cpp
+MicroboltOTA::begin(
+    "WiFi",
+    "Password"
+);
+```
+
+MicroboltOTA automatically uses:
+
+```text
+MicroboltOTA.local
+```
+
+---
+
+## ⚡ Quick Start
+
+```cpp
+#include <MicroboltOTA.h>
 
 void setup()
-
 {
+    MicroboltOTA::begin(
+        "YOUR_WIFI_NAME",
+        "YOUR_WIFI_PASSWORD",
+        "MyRobot"
+    );
 
-&#x20;   MicroboltOTAbegin(
-
-&#x20;       YOUR\_WIFI\_NAME,
-
-&#x20;       YOUR\_WIFI\_PASSWORD
-
-&#x20;   );
-
+    MicroboltOTA::println("MicroboltOTA Started");
 }
-
-
 
 void loop()
-
 {
+    MicroboltOTA::run();
 
-&#x20;   MicroboltOTArun();
+    static unsigned long last = 0;
 
+    if (millis() - last > 1000)
+    {
+        last = millis();
 
-
-&#x20;   static unsigned long t = 0;
-
-
-
-&#x20;   if (millis() - t  1000)
-
-&#x20;   {
-
-&#x20;       t = millis();
-
-&#x20;       MicroboltOTAprintln(Robot Alive);
-
-&#x20;   }
-
+        MicroboltOTA::println("Robot Alive");
+    }
 }
-
 ```
 
+---
 
+## 🚀 OTA Upload Setup
 
-\---
-
-
-
-\## 🌐 OTA Upload (PlatformIO)
-
-
-
-After first USB upload
-
-
+Configure PlatformIO:
 
 ```ini
-
-upload\_protocol = espota
-
-upload\_port = 192.168.1.100
-
+upload_protocol = espota
+upload_port = MyRobot.local
 ```
 
+Upload normally using the PlatformIO Upload button.
 
+No USB cable required after the first upload.
 
-Or using hostname
+---
 
+## 🖥️ Wireless Monitor Setup
 
+Configure PlatformIO:
 
 ```ini
-
-upload\_protocol = espota
-
-upload\_port = MicroboltOTA.local
-
+monitor_port = socket://MyRobot.local:23
+monitor_speed = 115200
 ```
 
+Open the PlatformIO Serial Monitor to view logs over Wi-Fi.
 
+---
 
-\---
-
-
-
-\## 💻 Wireless Serial Monitor (Telnet)
-
-
-
-Connect using
-
-
-
-```bash
-
-telnet device-ip 23
-
-```
-
-
-
-Example
-
-
-
-```bash
-
-telnet 192.168.1.100 23
-
-```
-
-
-
-\---
-
-
-
-\## 🧠 API Reference
-
-
-
-\### begin(ssid, password, hostname)
-
-
-
-Initializes WiFi, OTA, and Telnet server.
-
-
+## 📝 Logging Functions
 
 ```cpp
-
-MicroboltOTAbegin(WiFi, Password, Robot01);
-
+MicroboltOTA::print("Hello");
+MicroboltOTA::println("World");
+MicroboltOTA::printf("Value: %d\n", value);
 ```
 
+Output is automatically sent to:
 
+* USB Serial
+* Telnet Console
 
-\---
+This makes remote debugging easy when your robot or device is across the room.
 
+---
 
+## ⚠️ Important
 
-\### run()
-
-
-
-Must be called inside `loop()`.
-
-
-
-Handles
-
-
-
-&#x20;OTA updates
-
-&#x20;WiFi reconnect
-
-&#x20;Telnet connections
-
-
-
-\---
-
-
-
-\### print()  println()
-
-
-
-Send logs to Serial + Telnet.
-
-
+Always call:
 
 ```cpp
-
-MicroboltOTAprintln(Hello Robot);
-
+MicroboltOTA::run();
 ```
 
+inside your `loop()` function.
 
+MicroboltOTA uses this function to handle:
 
-\---
+* OTA Updates
+* Telnet Connections
+* Wi-Fi Reconnection
 
+Without it, OTA and wireless monitoring will not work.
 
+---
 
-\### printf()
+## 📟 Example Startup Output
 
+```text
+WiFi Connected
+IP Address: 192.168.1.5
+mDNS Started
 
-
-Formatted output.
-
-
-
-```cpp
-
-MicroboltOTAprintf(Battery %d%%n, 85);
-
+OTA Ready
+Telnet Server Ready
+Hostname: MyRobot.local
+Monitor: socket://MyRobot.local:23
+Version: 1.0.0
 ```
 
+---
 
+## ⚙️ Example PlatformIO Configuration
 
-\---
+```ini
+[env:esp32]
+platform = espressif32
+board = esp32dev
+framework = arduino
 
+lib_deps =
+    https://github.com/MicroboltRobotics/MicroboltOTA.git
 
+upload_protocol = espota
+upload_port = MyRobot.local
 
-\## ⚠️ Important Notes
+monitor_port = socket://MyRobot.local:23
+monitor_speed = 115200
+```
 
+---
 
+## 🛠️ Requirements
 
-&#x20;Always call `MicroboltOTArun()` in `loop()`
+* ESP32
+* Arduino Framework
+* PlatformIO
 
-&#x20;First upload must be via USB
+---
 
-&#x20;OTA requires stable WiFi connection
-
-&#x20;Telnet runs on port 23
-
-
-
-\---
-
-
-
-\## 🧪 Example Use Cases
-
-
-
-&#x20;ESP32 Robot Cars
-
-&#x20;IoT Sensor Nodes
-
-&#x20;Wireless telemetry systems
-
-&#x20;Robotics debugging tools
-
-
-
-\---
-
-
-
-\## 📌 Version
-
-
-
-v1.0.0
-
-
-
-\---
-
-
-
-\## 👨‍💻 Author
-
-
-
-Microbolt Robotics  
-
-ESP32 • Robotics • Embedded Systems  
-
-
-
-🌐 GitHub httpsgithub.comMicroboltRobotics  
-
-📺 YouTube httpsyoutube.com@MicroboltRobotics  
-
-
-
-\---
-
-
-
-\## 📄 License
-
-
+## 📄 License
 
 MIT License
 
+---
 
+## 👨‍💻 Author
 
-\---
+### 🤖 Microbolt Robotics
 
+ESP32 • Robotics • Embedded Systems
 
+GitHub: https://github.com/MicroboltRobotics
 
-\## ⭐ Why MicroboltOTA
+YouTube: https://www.youtube.com/@MicroboltRobotics
 
-
-
-Instead of writing long OTA + logging setup code, use
-
-
-
-```cpp
-
-MicroboltOTAbegin(...);
-
-MicroboltOTArun();
-
-```
-
-
-
-That’s it.
+⭐ If you find this project useful, consider starring the repository.
