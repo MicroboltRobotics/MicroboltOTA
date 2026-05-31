@@ -1,4 +1,5 @@
 #include "MicroboltOTA.h"
+#include <ESPmDNS.h>
 
 namespace MicroboltOTA
 {
@@ -68,6 +69,15 @@ namespace MicroboltOTA
 
         ArduinoOTA.setHostname(hostname);
 
+        if (MDNS.begin(hostname))
+        {
+            Serial.println("mDNS Started");
+        }
+        else
+        {
+            Serial.println("mDNS Failed");
+        }
+
         ArduinoOTA.onStart([]()
                            { Serial.println("OTA Start"); });
 
@@ -76,18 +86,14 @@ namespace MicroboltOTA
 
         ArduinoOTA.onProgress([](unsigned int progress,
                                  unsigned int total)
-                              {
-                                  Serial.printf(
-                                      "OTA %u%%\r",
-                                      (progress * 100) / total);
-                              });
+                              { Serial.printf(
+                                    "OTA %u%%\r",
+                                    (progress * 100) / total); });
 
         ArduinoOTA.onError([](ota_error_t error)
-                           {
-                               Serial.printf(
-                                   "OTA Error %u\n",
-                                   error);
-                           });
+                           { Serial.printf(
+                                 "OTA Error %u\n",
+                                 error); });
 
         ArduinoOTA.begin();
 
@@ -100,6 +106,14 @@ namespace MicroboltOTA
         Serial.println(hostname);
         Serial.print("Version: ");
         Serial.println(VERSION);
+
+        Serial.print("Hostname: ");
+        Serial.print(hostname);
+        Serial.println(".local");
+
+        Serial.print("Monitor: socket://");
+        Serial.print(hostname);
+        Serial.println(".local:23");
     }
 
     void print(const String &msg)
