@@ -175,10 +175,11 @@ v1.0.0
 
 ## 👨‍💻 Author
 
-Microbolt Robotics
-ESP32 • Robotics • Embedded Systems
+Microbolt Robotics  
+ESP32 • Robotics • Embedded Systems  
 
-GitHub: [https://github.com/MicroboltRobotics](https://github.com/MicroboltRobotics)
+🌐 GitHub: https://github.com/MicroboltRobotics  
+📺 YouTube: https://youtube.com/@MicroboltRobotics  
 
 ---
 
