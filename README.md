@@ -81,13 +81,13 @@ for OTA uploads and wireless monitoring.
 
 ```ini
 upload_protocol = espota
-upload_port = MyRobot.local
+upload_port = MicroboltOTA.local
 ```
 
 ### 🖥️ Wireless Monitor
 
 ```ini
-monitor_port = socket://MyRobot.local:23
+monitor_port = socket://MicroboltOTA.local:23
 monitor_speed = 115200
 ```
 
